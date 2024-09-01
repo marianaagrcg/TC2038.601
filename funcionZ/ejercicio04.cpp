@@ -3,8 +3,8 @@
 #include <string>
 
 //Algoritmo de Z
-
 // Función para calcular la función Z
+
 std::vector<int> calculateZ(std::string s) {
     int n = s.length();
     std::vector<int> Z(n);
