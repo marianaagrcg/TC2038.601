@@ -2,54 +2,57 @@
 #include <vector>
 #include <string>
 
-//Algoritmo de Z
-// Función para calcular la función Z
-
+// Función para calcular el arreglo Z
 std::vector<int> calculateZ(std::string s) {
     int n = s.length();
-    std::vector<int> Z(n);
+    std::vector<int> z(n);
     int L = 0, R = 0;
-    for (int i = 1; i < n; ++i) {
-        if (i <= R) {
-            Z[i] = std::min(R - i + 1, Z[i - L]);
-        }
-        while (i + Z[i] < n && s[Z[i]] == s[i + Z[i]]) {
-            ++Z[i];
-        }
-        if (i + Z[i] - 1 > R) {
-            L = i;
-            R = i + Z[i] - 1;
+    for (int i = 1; i < n; i++) {
+        if (i > R) {
+            L = R = i;
+            while (R < n && s[R - L] == s[R]) {
+                R++;
+            }
+            z[i] = R - L;
+            R--;
+        } else {
+            int k = i - L;
+            if (z[k] < R - i + 1) {
+                z[i] = z[k];
+            } else {
+                L = i;
+                while (R < n && s[R - L] == s[R]) {
+                    R++;
+                }
+                z[i] = R - L;
+                R--;
+            }
         }
     }
-    return Z;
+    return z;
 }
 
-// Función para contar todas las ocurrencias de la subcadena usando la función Z
-int countOccurrences(std::string text, std::string pattern) {
+// Función para encontrar la subcadena utilizando el algoritmo Z
+void searchSubstring(const std::string& text, const std::string& pattern) {
     std::string concat = pattern + "$" + text;
-    std::vector<int> Z = calculateZ(concat);
-    
+    std::vector<int> z = calculateZ(concat);
+    int patternLength = pattern.length();
     int count = 0;
-    for (int i = 0; i < Z.size(); ++i) {
-        if (Z[i] == pattern.length()) {
+
+    for (int i = 0; i < z.size(); i++) {
+        if (z[i] == patternLength) {
             count++;
         }
     }
-    return count;
+
+    std::cout << "La subcadena " << pattern << " aparece " << count << " veces en " << text << std::endl;
 }
 
 int main() {
-    std::string text1 = "aaabcaabccaabcabcabcabc";
-    std::string pattern1 = "abc";
-    std::cout << "La subcadena '" << pattern1 << "' aparece " << countOccurrences(text1, pattern1) << " veces en '" << text1 << "'." << std::endl;
-
-    std::string text2 = "mimamamemima";
-    std::string pattern2 = "mima";
-    std::cout << "La subcadena '" << pattern2 << "' aparece " << countOccurrences(text2, pattern2) << " veces en '" << text2 << "'." << std::endl;
-
-    std::string text3 = "eseososeaseaasiasiseaseaeseoso";
-    std::string pattern3 = "sea";
-    std::cout << "La subcadena '" << pattern3 << "' aparece " << countOccurrences(text3, pattern3) << " veces en '" << text3 << "'." << std::endl;
+    // Pruebas con las cadenas y subcadenas proporcionadas
+    searchSubstring("aaabcaabccaabcabcabcabc", "abc");
+    searchSubstring("mimamamemima", "mima");
+    searchSubstring("eseososeaseaasiasiseaseaeseoso", "sea");
 
     return 0;
 }
