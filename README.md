@@ -1,5 +1,6 @@
 # Repositorio de la materia Análisis y diseño de algoritmos avanzados (Gpo 601)
-            ![portada](/assets/image.png)
+
+![portada](/assets/image.png)
 
 ## Actividades Realizadas:
 ### Tiempo de ejecución problema cut rod
