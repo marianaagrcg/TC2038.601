@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>  // Para trabajar con archivos
+#include <sstream>  // Para procesar cada línea del archivo
 
 // Función para calcular el arreglo Z
-std::vector<int> calculateZ(std::string s) {
+std::vector<int> calculateZ(const std::string& s) {
     int n = s.length();
     std::vector<int> z(n);
     int L = 0, R = 0;
@@ -45,14 +47,29 @@ void searchSubstring(const std::string& text, const std::string& pattern) {
         }
     }
 
-    std::cout << "La subcadena " << pattern << " aparece " << count << " veces en " << text << std::endl;
+    std::cout << "La subcadena \"" << pattern << "\" aparece " << count << " veces en \"" << text << "\"" << std::endl;
 }
 
 int main() {
-    // Pruebas con las cadenas y subcadenas proporcionadas
-    searchSubstring("aaabcaabccaabcabcabcabc", "abc");
-    searchSubstring("mimamamemima", "mima");
-    searchSubstring("eseososeaseaasiasiseaseaeseoso", "sea");
+    std::ifstream inputFile("input.txt"); // Archivo que contiene los casos
+    if (!inputFile) {
+        std::cerr << "No se pudo abrir el archivo." << std::endl;
+        return 1;
+    }
 
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        std::stringstream ss(line);
+        std::string text, pattern;
+        
+        // Leer el texto y el patrón de cada línea
+        if (ss >> text >> pattern) {
+            searchSubstring(text, pattern);  // Llamar a la función de búsqueda
+        } else {
+            std::cerr << "Formato de línea incorrecto en: " << line << std::endl;
+        }
+    }
+
+    inputFile.close();
     return 0;
 }
