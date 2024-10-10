@@ -7,18 +7,16 @@ using namespace std;
 #define INF INT_MAX
 
 void leerMatrizDesdeEntrada(vector<vector<int>>& matriz, int& tam) {
-    cout << "Introduce el tamaño de la matriz (n): ";
     cin >> tam;
 
     matriz.resize(tam, vector<int>(tam));
 
-    cout << "Introduce la matriz de adyacencias (usa -1 para indicar ausencia de arco):\n";
     for (int i = 0; i < tam; i++) {
         for (int j = 0; j < tam; j++) {
             int valor;
             cin >> valor;
             if (valor == -1) {
-                matriz[i][j] = INF; // Representa el infinito
+                matriz[i][j] = INF; 
             } else {
                 matriz[i][j] = valor;
             }
@@ -45,7 +43,7 @@ void dijkstra(const vector<vector<int>>& grafo, int src) {
             }
         }
 
-        if (u == -1) break; // Todos los vértices accesibles han sido visitados
+        if (u == -1) break;
 
         visitado[u] = true;
 
@@ -102,7 +100,7 @@ int main() {
 
     // Leer la matriz desde la entrada
     leerMatrizDesdeEntrada(matriz, tam);
-    
+
     cout << "Dijkstra :\n";
     for (int i = 0; i < tam; i++) {
         dijkstra(matriz, i);
