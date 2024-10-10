@@ -1,106 +1,114 @@
 #include <iostream>
 #include <vector>
-#include <climits>
-
+#include <fstream>
+#include <climits> // Para usar INT_MAX
 using namespace std;
 
-// Implementación del algoritmo de Dijkstra
-void dijkstra(const vector<vector<int>>& graph, int start, vector<int>& dist) {
-    int n = graph.size();
-    vector<bool> visited(n, false);
-    dist[start] = 0;
+#define INF INT_MAX
 
-    for (int i = 0; i < n; ++i) {
-        int u = -1;
-        // Encuentra el nodo no visitado con la distancia más pequeña
-        for (int j = 0; j < n; ++j) {
-            if (!visited[j] && (u == -1 || dist[j] < dist[u])) {
-                u = j;
-            }
-        }
+void leerMatrizDesdeEntrada(vector<vector<int>>& matriz, int& tam) {
+    cout << "Introduce el tamaño de la matriz (n): ";
+    cin >> tam;
 
-        // Si no se puede mejorar, termina
-        if (dist[u] == INT_MAX)
-            break;
+    matriz.resize(tam, vector<int>(tam));
 
-        visited[u] = true;
-
-        // Actualiza las distancias
-        for (int v = 0; v < n; ++v) {
-            if (graph[u][v] != -1 && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v]) {
-                dist[v] = dist[u] + graph[u][v];
+    cout << "Introduce la matriz de adyacencias (usa -1 para indicar ausencia de arco):\n";
+    for (int i = 0; i < tam; i++) {
+        for (int j = 0; j < tam; j++) {
+            int valor;
+            cin >> valor;
+            if (valor == -1) {
+                matriz[i][j] = INF; // Representa el infinito
+            } else {
+                matriz[i][j] = valor;
             }
         }
     }
 }
 
-// Implementación del algoritmo de Floyd-Warshall
-void floydWarshall(vector<vector<int>>& graph) {
-    int n = graph.size();
-    
-    // Inicializar el gráfico: si no hay arco, el valor debe ser infinito (excepto la diagonal)
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            if (graph[i][j] == -1 && i != j) {
-                graph[i][j] = INT_MAX;
+// Algoritmo de Dijkstra para un solo nodo origen
+void dijkstra(const vector<vector<int>>& grafo, int src) {
+    int tam = grafo.size();
+    vector<int> dist(tam, INF); 
+    vector<bool> visitado(tam, false); 
+
+    dist[src] = 0;
+
+    for (int count = 0; count < tam - 1; count++) {
+        int minDist = INF, u = -1;
+
+        // Encontrar el vértice con la distancia mínima no visitado
+        for (int v = 0; v < tam; v++) {
+            if (!visitado[v] && dist[v] <= minDist) {
+                minDist = dist[v];
+                u = v;
+            }
+        }
+
+        if (u == -1) break; // Todos los vértices accesibles han sido visitados
+
+        visitado[u] = true;
+
+        // Actualizar las distancias de los vértices adyacentes
+        for (int v = 0; v < tam; v++) {
+            if (!visitado[v] && grafo[u][v] != INF && dist[u] != INF && dist[u] + grafo[u][v] < dist[v]) {
+                dist[v] = dist[u] + grafo[u][v];
             }
         }
     }
 
-    for (int k = 0; k < n; ++k) {
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                if (graph[i][k] != INT_MAX && graph[k][j] != INT_MAX && graph[i][k] + graph[k][j] < graph[i][j]) {
-                    graph[i][j] = graph[i][k] + graph[k][j];
+    // Imprimir distancias desde el nodo fuente
+    for (int i = 0; i < tam; i++) {
+        if (i != src) {
+            if (dist[i] == INF)
+                cout << "node " << src + 1 << " to node " << i + 1 << " : -1\n";
+            else
+                cout << "node " << src + 1 << " to node " << i + 1 << " : " << dist[i] << "\n";
+        }
+    }
+}
+
+// Algoritmo de Floyd-Warshall
+void floydWarshall(vector<vector<int>>& grafo) {
+    int tam = grafo.size();
+    vector<vector<int>> dist = grafo;
+
+    for (int k = 0; k < tam; k++) {
+        for (int i = 0; i < tam; i++) {
+            for (int j = 0; j < tam; j++) {
+                if (dist[i][k] != INF && dist[k][j] != INF && dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
                 }
             }
         }
+    }
+
+    // Imprimir la matriz de distancias mínimas
+    cout << "\nFloyd :\n";
+    for (int i = 0; i < tam; i++) {
+        for (int j = 0; j < tam; j++) {
+            if (dist[i][j] == INF)
+                cout << "-1 ";
+            else
+                cout << dist[i][j] << " ";
+        }
+        cout << "\n";
     }
 }
 
 int main() {
-    int n;
-    cin >> n;
-    vector<vector<int>> graph(n, vector<int>(n));
+    vector<vector<int>> matriz;
+    int tam;
 
-    // Leer la matriz de adyacencia
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cin >> graph[i][j];
-        }
-    }
-
-    // Ejecutar Dijkstra para cada nodo
-    cout << "Dijkstra :" << endl;
-    for (int i = 0; i < n; ++i) {
-        vector<int> dist(n, INT_MAX);
-        dijkstra(graph, i, dist);
-        for (int j = 0; j < n; ++j) {
-            if (i != j) {
-                if (dist[j] == INT_MAX) {
-                    cout << "node " << i+1 << " to node " << j+1 << " : INF" << endl;
-                } else {
-                    cout << "node " << i+1 << " to node " << j+1 << " : " << dist[j] << endl;
-                }
-            }
-        }
-    }
-
-    // Ejecutar el algoritmo de Floyd-Warshall
-    floydWarshall(graph);
+    // Leer la matriz desde la entrada
+    leerMatrizDesdeEntrada(matriz, tam);
     
-    // Imprimir la matriz resultante de Floyd-Warshall
-    cout << "\nFloyd :" << endl;
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            if (graph[i][j] == INT_MAX) {
-                cout << "INF ";
-            } else {
-                cout << graph[i][j] << " ";
-            }
-        }
-        cout << endl;
+    cout << "Dijkstra :\n";
+    for (int i = 0; i < tam; i++) {
+        dijkstra(matriz, i);
     }
+
+    floydWarshall(matriz);
 
     return 0;
 }

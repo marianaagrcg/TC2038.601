@@ -52,10 +52,10 @@ Este programa implementa los algoritmos de Dijkstra y Floyd-Warshall para encont
      ```
 
 3. **Compilar el programa:**
-   - Ejecuta el siguiente comando para compilar el archivo `main.cpp`:
+   - Ejecuta el siguiente comando para compilar el archivo `act32.cpp`:
 
      ```bash
-     g++ main.cpp -o programa
+     g++ act32.cpp -o programa
      ```
 
 4. **Ejecutar el programa:**
