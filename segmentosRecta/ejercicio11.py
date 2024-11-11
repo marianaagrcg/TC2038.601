@@ -55,4 +55,4 @@ segmentos = leer_segmentos('segmentos.txt')
 # Pruebas de los segmentos leídos
 for i, (i1, i2, i3, i4) in enumerate(segmentos, 1):
     resultado = segments_intersect(puntos[i1], puntos[i2], puntos[i3], puntos[i4])
-    print(f"Prueba {i}: Segmentos P{i1+1} P{i2+1} y  P{i3+1} P{i4+1} -> {resultado}")
+    print(f"Prueba {i}: Segmentos P{i1+1} P{i2+1} y P{i3+1} P{i4+1} -> {resultado}")
