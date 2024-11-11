@@ -7,6 +7,16 @@ def leer_puntos(archivo):
             puntos.append((x, y))
     return puntos
 
+# Función para leer los segmentos desde un archivo
+def leer_segmentos(archivo):
+    segmentos = []
+    with open(archivo, 'r') as file:
+        for linea in file:
+            # Lee los índices de los puntos y resta 1 para usarlos como índices en la lista de puntos
+            p1, p2, p3, p4 = map(int, linea.split())
+            segmentos.append((p1-1, p2-1, p3-1, p4-1))  # Ajuste de índices
+    return segmentos
+
 # Definimos una función para calcular la dirección
 def direction(pi, pj, pk):
     return (pk[0] - pi[0]) * (pj[1] - pi[1]) - (pj[0] - pi[0]) * (pk[1] - pi[1])
@@ -39,12 +49,10 @@ def segments_intersect(p1, p2, p3, p4):
 # Leer los puntos del archivo 'puntos.txt'
 puntos = leer_puntos('puntos.txt')
 
-# Asignación de puntos a las variables P1, P2, ..., P8
-P1, P2, P3, P4, P5, P6, P7, P8 = puntos
+# Leer los segmentos del archivo 'segmentos.txt'
+segmentos = leer_segmentos('segmentos.txt')
 
-# Pruebas de los segmentos
-print(segments_intersect(P1, P2, P3, P4))  # Segmentos P1P2 y P3P4
-print(segments_intersect(P5, P6, P7, P8))  # Segmentos P5P6 y P7P8
-print(segments_intersect(P3, P4, P7, P8))  # Segmentos P3P4 y P7P8
-print(segments_intersect(P1, P7, P5, P6))  # Segmentos P1P7 y P5P6
-print(segments_intersect(P1, P2, P7, P8))  # Segmentos P1P2 y P7P8
+# Pruebas de los segmentos leídos
+for i, (i1, i2, i3, i4) in enumerate(segmentos, 1):
+    resultado = segments_intersect(puntos[i1], puntos[i2], puntos[i3], puntos[i4])
+    print(f"Prueba {i}: Segmentos P{i1+1} P{i2+1} y  P{i3+1} P{i4+1} -> {resultado}")
